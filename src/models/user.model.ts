@@ -83,3 +83,5 @@ export const getUserWithPosts = async (id: string) => {
     include: { Post: true },
   });
 };
+
+export default User;
