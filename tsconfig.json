@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    // Enable all struct type-checking options
+    "strict": true,
+
+    // Ensure consistent casing in file names
+    "forceConsistentCasingInFileNames": true,
+
+    // Skip type checking all .d.ts files
+    "skipLibCheck": true,
+
+    // Treat files as modules even if it doesn't use import/export
+    "moduleDetection": "force",
+
+    // Ignore module structure
+    "module": "ES2022",
+
+    // Specify module resolution strategy
+    "moduleResolution": "node",
+
+    // Allow JSON modules to be imported
+    "resolveJsonModule": true,
+
+    // Allow JS files to be imported from TS and vice versa
+    "allowJs": true,
+
+    // Use correct ESM import behavior
+    "esModuleInterop": true,
+
+    // Disallow features that require cross-file awareness
+    "isolatedModules": true,
+
+    // TypeORM
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false
+  },
+  "exclude": ["node_modules"],
+  "include": ["src/**/*.ts"]
+}

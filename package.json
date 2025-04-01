@@ -2,31 +2,48 @@
   "name": "tfe_api",
   "version": "0.1.0",
   "description": "Une API pour mon TFE chez DigitalCity",
-  "main": "app.js",
-  "type": "module",
-  "scripts": {
-    "start": "node --env-file=.env app.js",
-    "dev": "node --env-file=.env --watch app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ayoub-ld/TFE_API.git"
-  },
   "keywords": [
     "API",
     "DigitalCity",
     "TFE"
   ],
-  "author": "Ayoub",
-  "license": "ISC",
+  "homepage": "https://github.com/ayoub-ld/TFE_API#readme",
   "bugs": {
     "url": "https://github.com/ayoub-ld/TFE_API/issues"
   },
-  "homepage": "https://github.com/ayoub-ld/TFE_API#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayoub-ld/TFE_API.git"
+  },
+  "license": "ISC",
+  "author": "Ayoub",
+  "type": "module",
+  "main": "src/app.ts",
+  "scripts": {
+    "start": "tsx --env-file=.env src/app.ts",
+    "dev": "node --env-file=.env --watch src/app.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
+    "@prisma/client": "^6.5.0",
+    "@prisma/extension-accelerate": "^1.3.0",
     "cors": "^2.8.5",
     "express": "^5.0.1",
-    "morgan": "^1.10.0"
+    "express-jsdoc-swagger": "^1.8.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "pg": "^8.14.1",
+    "uuid": "^11.1.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.13.15",
+    "prisma": "^6.5.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
   }
 }

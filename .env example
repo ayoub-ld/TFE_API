@@ -3,3 +3,8 @@ NODE_ENV="dev"
 
 # WEB API
 PORT=""
+
+# JWT
+JWT_SECRET=""
+JWT_ISSUER=""
+JWT_AUDIENCE=""
