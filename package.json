@@ -7,14 +7,6 @@
     "DigitalCity",
     "TFE"
   ],
-  "homepage": "https://github.com/ayoub-ld/TFE_API#readme",
-  "bugs": {
-    "url": "https://github.com/ayoub-ld/TFE_API/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ayoub-ld/TFE_API.git"
-  },
   "license": "ISC",
   "author": "Ayoub",
   "type": "module",
@@ -22,7 +14,20 @@
   "scripts": {
     "start": "tsx --env-file=.env src/app.ts",
     "dev": "node --env-file=.env --watch src/app.ts",
+    "migrate": "prisma migrate dev",
+    "generate": "prisma generate",
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .ts",
+    "prettier": "prettier --check .",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "homepage": "https://github.com/ayoub-ld/TFE_API#readme",
+  "bugs": {
+    "url": "https://github.com/ayoub-ld/TFE_API/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayoub-ld/TFE_API.git"
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",

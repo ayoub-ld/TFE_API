@@ -23,7 +23,7 @@ model User {
   profile_picture String
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
-  Post            Post[]
+  posts           Post[]
 }
 
 model Post {
@@ -34,17 +34,21 @@ model Post {
   author_id  String      @db.Uuid
   author     User?       @relation(fields: [author_id], references: [id_user])
   images     PostImage[]
+  hashtags   Hashtag[]
+  likes      Likes[]
 }
 
 model Hashtag {
   id_hashtag String @id @db.Uuid
   tag        String @unique
+  post       Post?  @relation(fields: [id_hashtag], references: [id_post])
 }
 
 model Likes {
   id_like    String   @id @db.Uuid
   user_id    String   @db.Uuid
   post_id    String   @db.Uuid
+  post       Post     @relation(fields: [post_id], references: [id_post])
   created_at DateTime @default(now())
 }
 
