@@ -19,3 +19,5 @@ postRouter
   .all((_req: Request, res: Response) => {
     res.status(405).json({ error: "Method not allowed" });
   });
+
+export default postRouter;
