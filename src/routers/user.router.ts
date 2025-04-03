@@ -4,7 +4,7 @@ import userController from "../controllers/user.controller";
 
 const userRouter = Router();
 
-/// GET /users - Récupérer tous les utilisateurs
+/// GET /user - Récupérer tous les utilisateurs
 userRouter
   .route("/")
   .get(userController.getAllUsers)
@@ -12,7 +12,7 @@ userRouter
     res.status(405).json({ error: "Method not allowed" });
   });
 
-/// GET /users/:id - Récupérer un utilisateur par son ID
+/// GET /user/:id - Récupérer un utilisateur par son ID
 userRouter
   .route("/:id")
   .get(userController.getUserById)
@@ -20,7 +20,7 @@ userRouter
     res.status(405).json({ error: "Method not allowed" });
   });
 
-/// POST /users - Créer un nouvel utilisateur
+/// POST /user - Créer un nouvel utilisateur
 userRouter
   .route("/")
   .post(userController.createUser)
@@ -28,7 +28,7 @@ userRouter
     res.status(405).json({ error: "Method not allowed" });
   });
 
-/// PUT /users/:id - Mettre à jour un utilisateur
+/// PUT /user/:id - Mettre à jour un utilisateur
 userRouter
   .route("/:id")
   .put(userController.updateUser)
@@ -36,7 +36,7 @@ userRouter
     res.status(405).json({ error: "Method not allowed" });
   });
 
-/// DELETE /users/:id - Supprimer un utilisateur
+/// DELETE /user/:id - Supprimer un utilisateur
 userRouter
   .route("/:id")
   .delete(userController.deleteUser)
