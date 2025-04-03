@@ -1,87 +1,109 @@
-import { PrismaClient } from "@prisma/client/edge";
+import { PrismaClient } from "@prisma/client/";
 import { withAccelerate } from "@prisma/extension-accelerate";
+import { Request, Response } from "express";
 
-const prisma = new PrismaClient().$extends(withAccelerate());
+const prisma = new PrismaClient().user;
 
-// Define types based on the Prisma schema
-export type User = {
-  id_user: string;
-  google_id: string;
-  email: string;
-  username: string;
-  firstname: string;
-  lastname: string;
-  profile_picture: string;
-  created_at: Date;
-  updated_at: Date;
+//% Get all users
+export const getAllUsers = async (_req: Request, res: Response) => {
+  try {
+    const allUsers = await prisma.findMany();
+    res.status(200).json({ data: allUsers });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ error: "Error while fetching all users" });
+  }
 };
 
-export type CreateUserInput = Omit<User, "created_at" | "updated_at">;
-export type UpdateUserInput = Partial<
-  Omit<User, "id_user" | "created_at" | "updated_at">
->;
+//% Get user by ID
+export const getUserById = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const user = await prisma.findUnique({
+      where: { id_user: id },
+    });
 
-// Create a new user
-export const createUser = async (userData: CreateUserInput) => {
-  return await prisma.user.create({
-    data: userData,
-  });
+    res.status(200).json({ data: user });
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    res.status(500).json({ error: "Error while fetching user by ID" });
+  }
 };
 
-// Get user by ID
-export const getUserById = async (id: string) => {
-  return await prisma.user.findUnique({
-    where: { id_user: id },
-  });
+//% Create a new user
+export const createUser = async (req: Request, res: Response) => {
+  try {
+    const userData = req.body;
+    const newUser = await prisma.create({
+      data: userData,
+    });
+
+    res.status(201).json({ data: newUser });
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ error: "Error while creating user" });
+  }
 };
 
-// Get user by email
-export const getUserByEmail = async (email: string) => {
-  return await prisma.user.findUnique({
-    where: { email },
-  });
+//% Get user by username
+export const getUserByUsername = async (req: Request, res: Response) => {
+  try {
+    const username = req.params.username;
+    const user = await prisma.findUnique({
+      where: { username: username },
+    });
+
+    res.status(200).json({ data: user });
+  } catch (error) {
+    console.error("Error fetching user by Username:", error);
+    res.status(500).json({ error: "Error while fetching user by Username" });
+  }
 };
 
-// Get user by username
-export const getUserByUsername = async (username: string) => {
-  return await prisma.user.findUnique({
-    where: { username },
-  });
+//% Get user by Google ID
+export const getUserByGoogleId = async (req: Request, res: Response) => {
+  try {
+    const google_id = req.params.google_id;
+    const user = await prisma.findUnique({
+      where: { google_id: google_id },
+    });
+
+    res.status(200).json({ data: user });
+  } catch (error) {
+    console.error("Error fetching user by Google ID:", error);
+    res.status(500).json({ error: "Error while fetching user by Google ID" });
+  }
 };
 
-// Get user by Google ID
-export const getUserByGoogleId = async (googleId: string) => {
-  return await prisma.user.findUnique({
-    where: { google_id: googleId },
-  });
-};
+//% Update user
+export const updateUser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.id;
+    const userData = req.body;
 
-// Get all users
-export const getAllUsers = async () => {
-  return await prisma.user.findMany();
-};
+    const updatedUser = await prisma.update({
+      where: { id_user: userId },
+      data: userData,
+    });
 
-// Update user
-export const updateUser = async (id: string, userData: UpdateUserInput) => {
-  return await prisma.user.update({
-    where: { id_user: id },
-    data: userData,
-  });
+    res.status(200).json({ data: updatedUser });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ error: "Error while updating user" });
+  }
 };
 
 // Delete user
-export const deleteUser = async (id: string) => {
-  return await prisma.user.delete({
-    where: { id_user: id },
-  });
-};
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.id;
+    const deletedUser = await prisma.delete({
+      where: { id_user: userId },
+    });
 
-// Get user with posts
-export const getUserWithPosts = async (id: string) => {
-  return await prisma.user.findUnique({
-    where: { id_user: id },
-    include: { Post: true },
-  });
+    res.status(204).json({ data: deletedUser });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ error: "Error while deleting user" });
+  }
 };
-
-export default User;
