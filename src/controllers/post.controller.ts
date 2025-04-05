@@ -1,13 +1,11 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-
-const posts = new PrismaClient().post;
+import * as postService from "../services/post.service";
 
 const postController = {
   //% Get all posts
   getAllPosts: async (_req: Request, res: Response) => {
     try {
-      const allPosts = await posts.findMany();
+      const allPosts = await postService.getAllPosts();
       res.status(200).json({ data: allPosts });
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -19,9 +17,7 @@ const postController = {
   getUserPosts: async (req: Request, res: Response) => {
     try {
       const id = req.params.id_user;
-      const userPosts = await posts.findMany({
-        where: { author_id: id },
-      });
+      const userPosts = await postService.getUserPosts(id);
 
       res.status(200).json({ data: userPosts });
     } catch (error) {
