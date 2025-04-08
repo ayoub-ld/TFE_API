@@ -27,15 +27,31 @@ model User {
 }
 
 model Post {
-  id_post    String      @id @db.Uuid
+  id_post    String   @id @default(uuid()) @db.Uuid
   content    String
-  image_url  String?
-  created_at DateTime    @default(now())
-  author_id  String      @db.Uuid
-  author     User?       @relation(fields: [author_id], references: [id_user])
-  images     PostImage[]
-  hashtags   Hashtag[]
-  likes      Likes[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  author_id  String   @db.Uuid
+
+  // Relations
+  author   User        @relation(fields: [author_id], references: [id_user], onDelete: Cascade)
+  images   PostImage[] // Cette relation contiendra toutes les images du post
+  hashtags Hashtag[]
+  likes    Likes[]
+
+  // Système de réponses
+  parent_id String? @db.Uuid
+  parent    Post?   @relation("Replies", fields: [parent_id], references: [id_post], onDelete: SetNull)
+  replies   Post[]  @relation("Replies")
+
+  // Métadonnées
+  reply_count Int     @default(0)
+  is_reply    Boolean @default(false)
+
+  // Index pour les performances
+  @@index([author_id])
+  @@index([parent_id])
+  @@index([created_at])
 }
 
 model Hashtag {
@@ -53,8 +69,11 @@ model Likes {
 }
 
 model PostImage {
-  id_image  String @id @db.Uuid
-  post_id   String @db.Uuid
-  post      Post   @relation(fields: [post_id], references: [id_post])
-  image_url String
+  id_image   String   @id @default(uuid()) @db.Uuid
+  post_id    String   @db.Uuid
+  post       Post     @relation(fields: [post_id], references: [id_post], onDelete: Cascade)
+  image_url  String
+  created_at DateTime @default(now())
+
+  @@index([post_id])
 }
