@@ -20,9 +20,9 @@ postRouter
     res.status(405).json({ error: "Method not allowed" });
   });
 
-/// GET /post/search/:keyword - Récupérer tous les posts contenant un mot clé
+/// GET /post/search - Récupérer tous les posts contenant un mot clé
 postRouter
-  .route("/search/:keyword")
+  .route("/search")
   .get(postController.getPostByKeyword)
   .all((_req: Request, res: Response) => {
     res.status(405).json({ error: "Method not allowed" });
