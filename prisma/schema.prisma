@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id_user         String   @id @db.Uuid
+  id_user         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   google_id       String   @unique
   email           String   @unique
   username        String   @unique
@@ -27,7 +27,7 @@ model User {
 }
 
 model Post {
-  id_post    String   @id @default(uuid()) @db.Uuid
+  id_post    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   content    String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -55,13 +55,13 @@ model Post {
 }
 
 model Hashtag {
-  id_hashtag String @id @db.Uuid
+  id_hashtag String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   tag        String @unique
   post       Post?  @relation(fields: [id_hashtag], references: [id_post])
 }
 
 model Likes {
-  id_like    String   @id @db.Uuid
+  id_like    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id    String   @db.Uuid
   post_id    String   @db.Uuid
   post       Post     @relation(fields: [post_id], references: [id_post])
@@ -69,7 +69,7 @@ model Likes {
 }
 
 model PostImage {
-  id_image   String   @id @default(uuid()) @db.Uuid
+  id_image   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   post_id    String   @db.Uuid
   post       Post     @relation(fields: [post_id], references: [id_post], onDelete: Cascade)
   image_url  String
