@@ -1,5 +1,5 @@
 import { Router } from "express";
-import type { Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
 import postController from "../controllers/post.controller";
 
 const postRouter = Router();
@@ -7,15 +7,13 @@ const postRouter = Router();
 /// GET /post - Récupérer tous les posts
 postRouter
   .route("/")
-  .get(postController.getAllPosts)
-  .all((_req: Request, res: Response) => {
-    res.status(405).json({ error: "Method not allowed" });
-  });
-
-/// GET /post/:id - Récupérer tous les post d'un utilisateur par son user_ID
-postRouter
-  .route("/:id")
-  .get(postController.getUserPosts)
+  .get(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await postController.getAllPosts(req, res);
+    } catch (err) {
+      next(err);
+    }
+  })
   .all((_req: Request, res: Response) => {
     res.status(405).json({ error: "Method not allowed" });
   });
@@ -24,6 +22,14 @@ postRouter
 postRouter
   .route("/search")
   .get(postController.getPostByKeyword)
+  .all((_req: Request, res: Response) => {
+    res.status(405).json({ error: "Method not allowed" });
+  });
+
+/// GET /post/:id - Récupérer tous les post d'un utilisateur par son user_ID
+postRouter
+  .route("/:id")
+  .get(postController.getUserPosts)
   .all((_req: Request, res: Response) => {
     res.status(405).json({ error: "Method not allowed" });
   });

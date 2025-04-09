@@ -3,8 +3,21 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 
 const prisma = new PrismaClient().$extends(withAccelerate()).post;
 
-export const getAllPosts = () => {
-  return prisma.findMany();
+export const getAllPosts = (limit: number = 15) => {
+  return prisma.findMany({
+    take: limit,
+    orderBy: {
+      created_at: "desc",
+    },
+    include: {
+      author: {
+        select: {
+          username: true,
+          profile_picture: true,
+        },
+      },
+    },
+  });
 };
 
 export const getUserPosts = (id_user: string) => {

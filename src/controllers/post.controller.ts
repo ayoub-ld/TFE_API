@@ -1,12 +1,21 @@
 import { Request, Response } from "express";
 import * as postService from "../services/post.service";
 
+const MAX_LIMIT = 100; // Define a maximum limit for posts to prevent excessive data retrieval
+
 const postController = {
   //% Get all posts
-  getAllPosts: async (_req: Request, res: Response) => {
+  getAllPosts: async (req: Request, res: Response) => {
     try {
-      const allPosts = await postService.getAllPosts();
-      res.status(200).json({ data: allPosts });
+      let limit = req.query.limit ? parseInt(req.query.limit as string) : 15; // Default limit to 15 if not provided
+      if (isNaN(limit) || limit < 1) {
+        return res.status(400).json({ error: "Invalid limit parameter" });
+      }
+
+      limit = Math.min(limit, MAX_LIMIT); // Ensure the limit does not exceed the maximum limit
+
+      const allPosts = await postService.getAllPosts(limit);
+      res.status(200).json({ data: allPosts, meta: { limit } });
     } catch (error) {
       console.error("Error fetching posts:", error);
       res.status(500).json({ error: "Error while fetching all posts" });
@@ -29,7 +38,8 @@ const postController = {
   //% Get posts by keyword
   getPostByKeyword: async (req: Request, res: Response) => {
     try {
-      const keyword = req.params.keyword;
+      const keyword = (req.query.q as string) || ""; // Get the keyword from the query string
+      console.log("Keyword:", keyword); // Log the keyword for debugging
       const postsByKeyword = await postService.getPostByKeyword(keyword);
 
       res.status(200).json({ data: postsByKeyword });
