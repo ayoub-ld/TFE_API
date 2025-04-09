@@ -1,27 +1,45 @@
 import { PrismaClient } from "@prisma/client";
+import { withAccelerate } from "@prisma/extension-accelerate";
 import { Request } from "express";
 
-const prisma = new PrismaClient().user;
+const prisma = new PrismaClient().$extends(withAccelerate()).user;
 
 export const getAllUsers = () => {
-  return prisma.findMany();
+  return prisma.findMany({
+    cacheStrategy: {
+      ttl: 30,
+      swr: 60,
+    },
+  });
 };
 
 export const getUserById = (id: string) => {
   return prisma.findUnique({
     where: { id_user: id },
+    cacheStrategy: {
+      ttl: 30,
+      swr: 60,
+    },
   });
 };
 
 export const getUserByUsername = (username: string) => {
   return prisma.findUnique({
     where: { username: username },
+    cacheStrategy: {
+      ttl: 30,
+      swr: 60,
+    },
   });
 };
 
 export const getUserByGoogleId = (google_id: string) => {
   return prisma.findUnique({
     where: { google_id: google_id },
+    cacheStrategy: {
+      ttl: 30,
+      swr: 60,
+    },
   });
 };
 

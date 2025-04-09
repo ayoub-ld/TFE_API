@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
+import { withAccelerate } from "@prisma/extension-accelerate";
 
-const prisma = new PrismaClient().post;
+const prisma = new PrismaClient().$extends(withAccelerate()).post;
 
 export const getAllPosts = () => {
   return prisma.findMany();
@@ -8,31 +9,34 @@ export const getAllPosts = () => {
 
 export const getUserPosts = (id_user: string) => {
   return prisma.findMany({
+    cacheStrategy: {
+      ttl: 30,
+      swr: 60,
+    },
     where: { author_id: id_user },
   });
 };
 
 export const getPostByKeyword = async (keyword: string) => {
-  try {
-    return await prisma.findMany({
-      where: {
-        OR: [{ content: { contains: keyword, mode: "insensitive" } }],
-      },
-      include: {
-        author: {
-          select: {
-            id_user: true,
-            username: true,
-            profile_picture: true,
-          },
+  return await prisma.findMany({
+    cacheStrategy: {
+      ttl: 30,
+      swr: 60,
+    },
+    where: {
+      OR: [{ content: { contains: keyword, mode: "insensitive" } }],
+    },
+    include: {
+      author: {
+        select: {
+          id_user: true,
+          username: true,
+          profile_picture: true,
         },
       },
-      orderBy: {
-        created_at: "desc",
-      },
-    });
-  } catch (error) {
-    console.error("Error searching posts:", error);
-    throw error;
-  }
+    },
+    orderBy: {
+      created_at: "desc",
+    },
+  });
 };
