@@ -4,10 +4,11 @@ import userController from "../controllers/user.controller";
 
 const userRouter = Router();
 
-/// GET /user - Récupérer tous les utilisateurs
+/// Consolidated root route
 userRouter
   .route("/")
   .get(userController.getAllUsers)
+  .post(userController.createUser)
   .all((_req: Request, res: Response) => {
     res.status(405).json({ error: "Method not allowed" });
   });
@@ -20,10 +21,12 @@ userRouter
     res.status(405).json({ error: "Method not allowed" });
   });
 
-/// POST /user - Créer un nouvel utilisateur
+/// GET /google/:googleId - Récupérer un utilisateur par son ID de Google
 userRouter
-  .route("/")
-  .post(userController.createUser)
+  .route("/google/:googleId")
+  .get(async (req: Request, res: Response) => {
+    await userController.getUserByGoogleId(req, res);
+  })
   .all((_req: Request, res: Response) => {
     res.status(405).json({ error: "Method not allowed" });
   });

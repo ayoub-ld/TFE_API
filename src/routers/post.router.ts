@@ -5,11 +5,19 @@ import postController from "../controllers/post.controller";
 const postRouter = Router();
 
 /// GET /post - Récupérer tous les posts
+// Update the root route
 postRouter
   .route("/")
   .get(async (req: Request, res: Response, next: NextFunction) => {
     try {
       await postController.getAllPosts(req, res);
+    } catch (err) {
+      next(err);
+    }
+  })
+  .post(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await postController.createPost(req, res);
     } catch (err) {
       next(err);
     }

@@ -42,8 +42,12 @@ const userController = {
   //% Get user by Google ID
   getUserByGoogleId: async (req: Request, res: Response) => {
     try {
-      const google_id = req.params.google_id;
-      const user = await userService.getUserByGoogleId(google_id);
+      const googleId = req.params.googleId;
+      const user = await userService.getUserByGoogleId(googleId);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
 
       res.status(200).json({ data: user });
     } catch (error) {
@@ -57,11 +61,13 @@ const userController = {
     try {
       const userData = req.body;
       const newUser = await userService.createUser(userData);
-
       res.status(201).json({ data: newUser });
     } catch (error) {
       console.error("Error creating user:", error);
-      res.status(500).json({ error: "Error while creating user" });
+      res.status(500).json({
+        error: "Error while creating user",
+        details: error instanceof Error ? error.message : "Unknown error",
+      });
     }
   },
 

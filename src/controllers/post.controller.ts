@@ -48,6 +48,25 @@ const postController = {
       res.status(500).json({ error: "Error while fetching posts by keyword" });
     }
   },
+  //% Create a new post
+  createPost: async (req: Request, res: Response) => {
+    try {
+      const { content, author_id } = req.body;
+
+      if (!content || !author_id) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+
+      const newPost = await postService.createPost(content, author_id);
+      res.status(201).json({ data: newPost });
+    } catch (error) {
+      console.error("Error creating post:", error);
+      res.status(500).json({
+        error: "Error while creating post",
+        details: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  },
 };
 
 export default postController;

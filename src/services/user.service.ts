@@ -43,9 +43,32 @@ export const getUserByGoogleId = (google_id: string) => {
   });
 };
 
-export const createUser = (userData: Request["body"]) => {
+export const createUser = async (userData: Request["body"]) => {
+  // Check for existing user with same email or google_id
+  const existingUser = await prisma.findFirst({
+    where: {
+      OR: [{ email: userData.email }, { google_id: userData.google_id }],
+    },
+  });
+
+  if (existingUser) {
+    if (existingUser.email === userData.email) {
+      throw new Error("User with this email already exists");
+    }
+    if (existingUser.google_id === userData.google_id) {
+      throw new Error("User with this Google ID already exists");
+    }
+  }
+
   return prisma.create({
-    data: userData,
+    data: {
+      google_id: userData.google_id,
+      email: userData.email,
+      username: userData.username,
+      firstname: userData.firstname || "Unknown",
+      lastname: userData.lastname || "User",
+      profile_picture: userData.profile_picture || "/default-avatar.png",
+    },
   });
 };
 
