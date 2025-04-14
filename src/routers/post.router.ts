@@ -42,4 +42,12 @@ postRouter
     res.status(405).json({ error: "Method not allowed" });
   });
 
+  // GET /post/user/:userId - Récupérer tous les posts d'un utilisateur par son user_ID
+postRouter
+.route("/user/:userId")
+.get(postController.getPostsByUserId) 
+.all((_req: Request, res: Response) => {
+    res.status(405).json({ error: "Method not allowed" });
+  });
+
 export default postRouter;
