@@ -17,11 +17,13 @@ userRouter
 userRouter
   .route("/:id")
   .get(userController.getUserById)
+  .put(userController.updateUser)
+  .delete(userController.deleteUser)
   .all((_req: Request, res: Response) => {
     res.status(405).json({ error: "Method not allowed" });
   });
 
-/// GET /google/:googleId - Récupérer un utilisateur par son ID de Google
+/// GET /user/google/:googleId - Récupérer un utilisateur par son ID de Google
 userRouter
   .route("/google/:googleId")
   .get(async (req: Request, res: Response) => {
@@ -31,18 +33,12 @@ userRouter
     res.status(405).json({ error: "Method not allowed" });
   });
 
-/// PUT /user/:id - Mettre à jour un utilisateur
+/// GET /user/email/:email - Récupérer un utilisateur par son email
 userRouter
-  .route("/:id")
-  .put(userController.updateUser)
-  .all((_req: Request, res: Response) => {
-    res.status(405).json({ error: "Method not allowed" });
-  });
-
-/// DELETE /user/:id - Supprimer un utilisateur
-userRouter
-  .route("/:id")
-  .delete(userController.deleteUser)
+  .route("/email/:email")
+  .get(async (req: Request, res: Response) => {
+    await userController.getUserByEmail(req, res);
+  })
   .all((_req: Request, res: Response) => {
     res.status(405).json({ error: "Method not allowed" });
   });

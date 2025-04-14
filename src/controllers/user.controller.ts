@@ -55,12 +55,35 @@ const userController = {
       res.status(500).json({ error: "Error while fetching user by Google ID" });
     }
   },
+  //% Get user by email
+  getUserByEmail: async (req: Request, res: Response) => {
+    try {
+      const email = req.params.email;
+      console.log("Looking up user by email:", email);
+      const user = await userService.getUserByEmail(email);
+      
+      console.log("User lookup result:", user ? "User found" : "User not found");
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.status(200).json({ data: user });
+    } catch (error) {
+      console.error("Error fetching user by email:", error);
+      res.status(500).json({ error: "Error while fetching user by email" });
+    }
+  },
 
   //% Create a new user
   createUser: async (req: Request, res: Response) => {
     try {
       const userData = req.body;
+      console.log("Creating user with data:", JSON.stringify(userData));
+      
       const newUser = await userService.createUser(userData);
+      console.log("User created successfully:", newUser);
+      
       res.status(201).json({ data: newUser });
     } catch (error) {
       console.error("Error creating user:", error);
