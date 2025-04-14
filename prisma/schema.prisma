@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "./node_modules/.prisma/client" // Explicitly specify the output path
 }
 
 datasource db {
@@ -13,8 +14,43 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Auth.js compatibility
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id_user], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String   @db.Uuid
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id_user], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
 model User {
-  id_user         String   @id @db.Uuid
+  id_user         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   google_id       String   @unique
   email           String   @unique
   username        String   @unique
@@ -24,28 +60,50 @@ model User {
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
   posts           Post[]
+
+  // Auth.js required fields
+  name     String?
+  image    String?
+  accounts Account[]
+  sessions Session[]
 }
 
 model Post {
-  id_post    String      @id @db.Uuid
+  id_post    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   content    String
-  image_url  String?
-  created_at DateTime    @default(now())
-  author_id  String      @db.Uuid
-  author     User?       @relation(fields: [author_id], references: [id_user])
-  images     PostImage[]
-  hashtags   Hashtag[]
-  likes      Likes[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  author_id  String   @db.Uuid
+
+  // Relations
+  author   User        @relation(fields: [author_id], references: [id_user], onDelete: Cascade)
+  images   PostImage[] // Cette relation contiendra toutes les images du post
+  hashtags Hashtag[]
+  likes    Likes[]
+
+  // Système de réponses
+  parent_id String? @db.Uuid
+  parent    Post?   @relation("Replies", fields: [parent_id], references: [id_post], onDelete: SetNull)
+  replies   Post[]  @relation("Replies")
+
+  // Métadonnées
+  reply_count Int     @default(0)
+  is_reply    Boolean @default(false)
+
+  // Index pour les performances
+  @@index([author_id])
+  @@index([parent_id])
+  @@index([created_at])
 }
 
 model Hashtag {
-  id_hashtag String @id @db.Uuid
+  id_hashtag String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   tag        String @unique
   post       Post?  @relation(fields: [id_hashtag], references: [id_post])
 }
 
 model Likes {
-  id_like    String   @id @db.Uuid
+  id_like    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id    String   @db.Uuid
   post_id    String   @db.Uuid
   post       Post     @relation(fields: [post_id], references: [id_post])
@@ -53,8 +111,11 @@ model Likes {
 }
 
 model PostImage {
-  id_image  String @id @db.Uuid
-  post_id   String @db.Uuid
-  post      Post   @relation(fields: [post_id], references: [id_post])
-  image_url String
+  id_image   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  post_id    String   @db.Uuid
+  post       Post     @relation(fields: [post_id], references: [id_post], onDelete: Cascade)
+  image_url  String
+  created_at DateTime @default(now())
+
+  @@index([post_id])
 }

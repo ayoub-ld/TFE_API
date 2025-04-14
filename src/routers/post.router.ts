@@ -1,13 +1,35 @@
 import { Router } from "express";
-import type { Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
 import postController from "../controllers/post.controller";
 
 const postRouter = Router();
 
 /// GET /post - Récupérer tous les posts
+// Update the root route
 postRouter
   .route("/")
-  .get(postController.getAllPosts)
+  .get(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await postController.getAllPosts(req, res);
+    } catch (err) {
+      next(err);
+    }
+  })
+  .post(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await postController.createPost(req, res);
+    } catch (err) {
+      next(err);
+    }
+  })
+  .all((_req: Request, res: Response) => {
+    res.status(405).json({ error: "Method not allowed" });
+  });
+
+/// GET /post/search - Récupérer tous les posts contenant un mot clé
+postRouter
+  .route("/search")
+  .get(postController.getPostByKeyword)
   .all((_req: Request, res: Response) => {
     res.status(405).json({ error: "Method not allowed" });
   });
