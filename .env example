@@ -4,6 +4,9 @@ NODE_ENV="dev"
 # WEB API
 PORT=""
 
+# DB
+DATABASE_URL=""
+
 # JWT
 JWT_SECRET=""
 JWT_ISSUER=""
