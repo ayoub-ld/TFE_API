@@ -42,6 +42,22 @@ postRouter
     res.status(405).json({ error: "Method not allowed" });
   });
 
+/// POST /post/:id/like - Liker une publication  
+postRouter
+  .route("/:id/like")
+  .post(postController.likePost)
+  .all((_req: Request, res: Response) => {
+    res.status(405).json({ error: "Method not allowed" });
+  });
+
+/// DELETE /post/:id/like - UnLike une publication
+postRouter
+  .route("/:id/like")
+  .delete(postController.unlikePost)
+  .all((_req: Request, res: Response) => {
+    res.status(405).json({ error: "Method not allowed" });
+  });
+
   // GET /post/user/:userId - Récupérer tous les posts d'un utilisateur par son user_ID
 postRouter
 .route("/user/:userId")
