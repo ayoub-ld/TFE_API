@@ -48,6 +48,19 @@ const postController = {
       res.status(500).json({ error: "Error while fetching posts by keyword" });
     }
   },
+
+  //% Get posts by user ID
+  getPostsByUserId: async (req: Request, res: Response) => {
+    try {
+      const userId = req.params.userId;
+      const posts = await postService.getPostsByUserId(userId);
+      res.status(200).json({ data: posts });
+    } catch (error) {
+      console.error("Error fetching user posts:", error);
+      res.status(500).json({ error: "Error fetching user posts" });
+    }
+  },
+  
   //% Create a new post
   createPost: async (req: Request, res: Response) => {
     try {

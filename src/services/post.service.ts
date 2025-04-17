@@ -55,6 +55,18 @@ export const getPostByKeyword = async (keyword: string) => {
   });
 };
 
+export const getPostsByUserId = async (userId: string) => {
+  return prisma.findMany({
+    where: { author_id: userId },
+    include: {
+      author: true,
+    },
+    orderBy: {
+      created_at: "desc",
+    },
+  });
+};
+
 export const createPost = (content: string, author_id: string) => {
   return prisma.create({
     data: {
