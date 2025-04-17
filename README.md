@@ -8,5 +8,10 @@
 ## Endpoints de l'API
 
 ### /api/v1/user
+*Done* ✅
 
 ### /api/v1/post
+*Done* ✅
+
+### /api/v1/like 
+*Work-In-Progess* 👷🏻
